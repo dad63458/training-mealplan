@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>💪 明天练什么</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100vh;color:#fff;display:flex;flex-direction:column;align-items:center;padding:16px}
+.c{max-width:480px;width:100%}
+h1{text-align:center;font-size:26px;padding:20px 0 4px}
+.sub{text-align:center;font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:16px}
+.dt{text-align:center;font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:16px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.b{position:relative;background:rgba(255,255,255,0.07);border:2px solid rgba(255,255,255,0.1);border-radius:14px;padding:18px 10px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.b:active{transform:scale(0.96)}
+.i{font-size:36px;display:block;margin-bottom:4px}
+.n{font-size:17px;font-weight:700}
+.d{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px}
+.b.s{border-color:#f39c12;background:rgba(243,156,18,0.15);box-shadow:0 0 16px rgba(243,156,18,0.15)}
+.b.s::after{content:"✓";position:absolute;top:6px;right:10px;color:#f39c12;font-weight:700;font-size:16px}
+.b.r{grid-column:1/-1}
+.b.r.s{border-color:#2ecc71;background:rgba(46,204,113,0.12)}
+.b.r.s::after{color:#2ecc71}
+.inp{width:100%;padding:12px 14px;margin:12px 0;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:14px;outline:none}
+.inp:focus{border-color:rgba(243,156,18,0.4);background:rgba(255,255,255,0.1)}
+.inp::placeholder{color:rgba(255,255,255,0.3)}
+.bt{margin-top:16px;padding:16px;border:none;border-radius:12px;color:#fff;font-size:18px;font-weight:700;cursor:pointer;width:100%;text-align:center;transition:all .2s}
+.bt:active{transform:scale(0.97)}
+.bt:disabled{opacity:0.3;cursor:default;transform:none}
+.bt1{background:linear-gradient(135deg,#f39c12,#e67e22);box-shadow:0 4px 16px rgba(243,156,18,0.25)}
+.bt2{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+.s{margin:12px 0;padding:14px;border-radius:12px;text-align:center;display:none;font-size:14px}
+.s.er{display:block;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3)}
+.s.ok{display:block;background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.25)}
+.ft{text-align:center;font-size:11px;color:rgba(255,255,255,0.2);margin-top:20px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="c">
+<h1>💪 明天练什么</h1>
+<div class="dt" id="dt"></div>
+<div class="sub">点一下 → 告诉我 → 我做食谱</div>
+
+<div class="g">
+<div class="b" data-t="胸肌"><span class="i">🏋️</span><span class="n">胸肌</span><span class="d">卧推·飞鸟</span></div>
+<div class="b" data-t="背部"><span class="i">🦅</span><span class="n">背部</span><span class="d">引体·划船</span></div>
+<div class="b" data-t="腿部"><span class="i">🦵</span><span class="n">腿部</span><span class="d">深蹲·硬拉</span></div>
+<div class="b" data-t="肩部"><span class="i">🔥</span><span class="n">肩部</span><span class="d">推举·侧平举</span></div>
+<div class="b" data-t="手臂"><span class="i">💪</span><span class="n">手臂</span><span class="d">二头·三头</span></div>
+<div class="b" data-t="有氧"><span class="i">🏃</span><span class="n">有氧/核心</span><span class="d">HIIT·腹肌</span></div>
+<div class="b r" data-t="休息"><span class="i">😴</span><span class="n">休息日</span><span class="d">恢复·拉伸</span></div>
+</div>
+
+<input class="inp" id="note" type="text" placeholder="备注（可选，如：冲大重量）" maxlength="100">
+
+<button class="bt bt1" id="go" disabled>👆 先选练什么</button>
+<div class="s" id="st"></div>
+<button class="bt bt2" id="cp" style="display:none">📋 复制信息 → 粘贴发给我</button>
+
+<div class="ft">
+选好后点一下 → 复制文字<br>
+粘贴到 WebChat 聊天里发给我<br>
+我帮你定制明天食谱 💪
+</div>
+</div>
+
+<script>
+(function(){
+const D=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+const n=new Date();n.setDate(n.getDate()+1);
+const dk=n.toISOString().split("T")[0];
+document.getElementById("dt").textContent="📅 "+n.getFullYear()+"年"+(n.getMonth()+1)+"月"+n.getDate()+"日 "+D[n.getDay()];
+
+let sel=null;
+document.querySelectorAll(".b").forEach(b=>{b.onclick=()=>{
+  document.querySelectorAll(".b").forEach(x=>x.classList.remove("s"));
+  b.classList.add("s");sel=b.dataset.t;
+  const g=document.getElementById("go");g.disabled=false;
+  g.textContent="✅ 明天练"+b.querySelector(".n").textContent;
+  document.getElementById("st").style.display="none";
+  document.getElementById("cp").style.display="none";
+}});
+
+document.getElementById("go").onclick=()=>{
+  if(!sel)return;
+  const note=document.getElementById("note").value.trim();
+  const nn=document.querySelector(".b.s .n").textContent;
+  // Build a simple message
+  const msg="明天练"+sel+(note?"（"+note+"）":"");
+  
+  // Save locally
+  try{
+    const p=JSON.parse(localStorage.getItem("tp")||"{}");
+    p[dk]={t:sel,n:note||""};
+    localStorage.setItem("tp",JSON.stringify(p));
+  }catch(e){}
+  
+  document.getElementById("go").disabled=true;
+  document.getElementById("go").textContent="✅ 已选好！点下面复制";
+  
+  const cp=document.getElementById("cp");
+  cp.style.display="block";
+  cp.textContent='📋 复制「'+msg+'」';
+  cp.dataset.msg=msg;
+  
+  const st=document.getElementById("st");
+  st.className="s ok";
+  st.innerHTML="✅ 已记住！<br><span style=font-size:12px;color:rgba(255,255,255,0.5)>复制后粘贴到聊天发给我</span>";
+  st.style.display="block";
+};
+
+document.getElementById("cp").onclick=async()=>{
+  const msg=document.getElementById("cp").dataset.msg;
+  try{
+    if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(msg);}
+    else{
+      const t=document.createElement("textarea");
+      t.value=msg;t.style.position="fixed";t.style.opacity="0";
+      document.body.appendChild(t);t.select();
+      document.execCommand("copy");
+      document.body.removeChild(t);
+    }
+    document.getElementById("cp").textContent="✅ 已复制！去聊天粘贴发给我";
+    document.getElementById("st").className="s ok";
+    document.getElementById("st").innerHTML="✅ 复制成功！<br>回到 WebChat 粘贴发送给我";
+  }catch(e){
+    document.getElementById("st").className="s er";
+    document.getElementById("st").innerHTML='❌ 复制失败<br>请长按选中这段文字复制：<br><b style=font-size:16px>'+msg+'</b>';
+    document.getElementById("cp").textContent="📋 再试一次";
+  }
+};
+
+// Show saved history
+try{
+  const p=JSON.parse(localStorage.getItem("tp")||"{}");
+  const e=Object.entries(p).sort((a,b)=>b[0].localeCompare(a[0]));
+  if(e.length>0){
+    const h=document.createElement("div");
+    h.style.cssText="margin-top:16px;padding:12px;background:rgba(255,255,255,0.04);border-radius:10px";
+    h.innerHTML="<div style=font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:8px>📋 本地记录</div>"+
+      e.slice(0,5).map(([dt,pl])=>{
+        const day=new Date(dt);const w=D[day.getDay()];
+        return "<div style='display:flex;justify-content:space-between;padding:4px 0;font-size:13px'>"+
+          "<span>"+pl.t+"</span><span style=color:rgba(255,255,255,0.4)>"+dt+" "+w+"</span></div>";
+      }).join("");
+    document.querySelector(".c").appendChild(h);
+  }
+}catch(e){}
+})();
+</script>
+</body>
+</html>
