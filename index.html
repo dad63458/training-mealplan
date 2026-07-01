@@ -94,7 +94,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="智能食谱">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
-<link rel="manifest" href="manifest.json"
+<link rel="manifest" id="pwaManifest" href="data:application/json,"
 </head>
 <body>
 <div class="lg-over" id="loginScreen">
@@ -1063,7 +1063,7 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 
 <script>
-if('serviceWorker' in navigator){  navigator.serviceWorker.register('sw.js');
+if('serviceWorker' in navigator){  navigator.serviceWorker.register('sw.js').catch(function(){var s=URL.createObjectURL(new Blob(['self.addEventListener("install",e=>e.waitUntil(self.skipWaiting()));self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(resp=>{var c=resp.clone();caches.open("mp-v3").then(ca=>ca.put(e.request,c));return resp;}).catch(function(){return caches.match(e.request)})))});'],{type:'application/javascript'}));navigator.serviceWorker.register(s);});
     "self.addEventListener('install',e=>e.waitUntil(self.skipWaiting()));"+
     "self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));"+
     "self.addEventListener('fetch',e=>{"+
@@ -1073,6 +1073,12 @@ if('serviceWorker' in navigator){  navigator.serviceWorker.register('sw.js');
     "});"
   ));
 }
+</script>
+<script>
+// Dynamic manifest via blob URL for PWA install support
+var m={name:"智能食谱·团队版",short_name:"智能食谱",description:"营养健身助手",start_url:".",display:"standalone",orientation:"portrait",background_color:"#f5f0eb",theme_color:"#1a1a2e",icons:[{src:"icon-192.png",sizes:"192x192",type:"image/png"},{src:"icon-512.png",sizes:"512x512",type:"image/png"}]};
+var b=new Blob([JSON.stringify(m)],{type:"application/json"});
+document.getElementById("pwaManifest").href=URL.createObjectURL(b);
 </script>
 </body>
 </html>
