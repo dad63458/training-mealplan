@@ -71,6 +71,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .u-si:hover{background:#f5f5f5}.u-si.active{background:#fde8e8;font-weight:600}
 .sw-over{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:150}
 .sw-over.show{display:block}
+
+.lg-over{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#1a1a2e,#16213e);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.lg-over.hidden{display:none}
+.lg-card{background:#fff;border-radius:16px;padding:24px 20px;width:90%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.lg-card h2{font-size:22px;margin-bottom:4px}.lg-card .sub{font-size:13px;color:#999;margin-bottom:20px}
+.lg-fi{width:100%;padding:12px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;margin-bottom:10px;outline:none;text-align:center}
+.lg-fi:focus{border-color:#1a1a2e}
+.lg-btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.lg-btn-p{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff}
+.lg-btn-o{background:transparent;border:1.5px solid #1a1a2e;color:#1a1a2e}
+.lg-list{text-align:left;max-height:160px;overflow-y:auto;margin-bottom:12px}
+.lg-pf{padding:10px 12px;background:#f8f8f8;border-radius:8px;margin:4px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s}
+.lg-pf:hover{background:#eee}.lg-pf .del{color:#e74c3c;font-size:18px;cursor:pointer;padding:0 4px}
+.lg-pin{width:100%;padding:12px;border:1.5px solid #ddd;border-radius:10px;font-size:15px;margin-bottom:10px;outline:none;text-align:center;letter-spacing:4px}
+.logout-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;margin-left:4px}
+</style>
 </style>
 
 <meta name="theme-color" content="#1a1a2e">
@@ -81,12 +97,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22%E6%99%BA%E8%83%BD%E9%A3%9F%E8%B0%B1%20%C2%B7%20%E5%9B%A2%E9%98%9F%E7%89%88%22%2C%22short_name%22%3A%22%E6%99%BA%E8%83%BD%E9%A3%9F%E8%B0%B1%22%2C%22description%22%3A%22%E8%90%A5%E5%85%BB%E5%81%A5%E8%BA%AB%E5%8A%A9%E6%89%8B%20-%20%E9%A3%9F%E8%B0%B1%E8%A7%84%E5%88%92%20%2B%20%E8%AE%AD%E7%BB%83%E7%AE%A1%E7%90%86%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22background_color%22%3A%22%23f5f0eb%22%2C%22theme_color%22%3A%22%231a1a2e%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D%2522http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%2522%20viewBox%3D%25220%200%20100%20100%2522%3E%3Ctext%20y%3D%2522.9em%2522%20font-size%3D%252290%2522%3E%F0%9F%8D%BD%EF%B8%8F%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22100x100%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
 </head>
 <body>
+<div class="lg-over" id="loginScreen">
+  <div style="color:#fff;font-size:48px;margin-bottom:8px">🍽️</div>
+  <div style="color:rgba(255,255,255,.6);font-size:14px;margin-bottom:20px">智能食谱 · 团队版</div>
+  <div class="lg-card" id="loginCard">
+    <h2>👤 选择档案</h2>
+    <div class="sub">每人独立数据，互不影响</div>
+    <div id="profileList" class="lg-list"></div>
+    <div id="createSection" style="display:none">
+      <input class="lg-fi" id="newProfileName" placeholder="输入你的名字" maxlength="20">
+      <button class="lg-btn lg-btn-p" onclick="loginProfile()" style="margin-bottom:4px">✅ 创建并进入</button>
+      <button class="lg-btn lg-btn-o" onclick="document.getElementById('createSection').style.display='none';document.getElementById('profileList').parentElement.style.display='';">取消</button>
+    </div>
+    <button class="lg-btn lg-btn-o" id="createBtn" onclick="document.getElementById('createSection').style.display='';document.getElementById('newProfileName').focus();this.parentElement.querySelector('#profileList').parentElement.querySelector('.lg-list').style.display='none';this.style.display='none';">＋ 创建新用户</button>
+  </div>
+</div>
 
 <div class="app-hdr">
   <div><h1>🍽 智能食谱</h1></div>
   <div style="display:flex;align-items:center;gap:4px">
     <div id="globalPill" style="font-size:12px;padding:3px 10px;border-radius:12px;background:rgba(255,255,255,.15);cursor:pointer;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">选择成员</div>
-    <button class="hdr-btn" onclick="showModal('um')" id="addBtn">+</button>
+    <button class="logout-btn" onclick="logoutProfile()" title="退出登录">🚪</button><button class="hdr-btn" onclick="showModal('um')" id="addBtn">+</button>
   </div>
 </div>
 
@@ -186,10 +217,100 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 
 <script>
 // ===== STORAGE =====
-var SK='***',ad=loadD(),st=[],se=new Set(),sg=null,sd=4,sm='auto',_customExIdx=0;
-function loadD(){try{var r=localStorage.getItem(SK);return r?JSON.parse(r):{users:[],daily:{}};}catch(e){return{users:[],daily:{}};}}
-function svD(){localStorage.setItem(SK,JSON.stringify(ad));}
+var SK='***',ad=loadD(),st=[],se=new Set(),sg=null,sd=4,sm='auto',_customExIdx=0,_currentProfile='';
+function getProfileKey(name){return 'mp_'+name;}
+function loadProfile(name){try{var r=localStorage.getItem(getProfileKey(name));return r?JSON.parse(r):{users:[],daily:{}};}catch(e){return{users:[],daily:{}};}}
+function saveProfile(name,data){localStorage.setItem(getProfileKey(name),JSON.stringify(data));}
+function listProfiles(){var profiles=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('mp_')){var nm=k.substring(3);try{var d=JSON.parse(localStorage.getItem(k));profiles.push({name:nm,users:d.users?d.users.length:0,lastUsed:d._lastUsed||''});}catch(e){}}}profiles.sort(function(a,b){return b.lastUsed.localeCompare(a.lastUsed);});return profiles;}
+function loadD(){return ad;}
+function svD(){if(_currentProfile){ad._lastUsed=new Date().toISOString();saveProfile(_currentProfile,ad);}}
 function gid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+// ===== PROFILE MANAGEMENT =====
+function renderProfileList(){
+  var el=document.getElementById('profileList'),profiles=listProfiles();
+  var createBtn=document.getElementById('createBtn');
+  var listParent=el.parentElement;
+  if(profiles.length===0){
+    el.innerHTML='<div style="font-size:12px;color:#999;padding:8px">暂无档案，点击下方按钮创建</div>';
+    if(createBtn)createBtn.style.display='';
+    // Auto-show create section if no profiles
+    document.getElementById('createSection').style.display='';
+    document.getElementById('newProfileName').focus();
+    return;
+  }
+  if(createBtn)createBtn.style.display='';
+  el.style.display='';
+  el.innerHTML=profiles.map(function(p){return'<div class="lg-pf" onclick="loginProfileByName(\''+p.name+'\')"><div style="flex:1"><b>'+esc(p.name)+'</b><div style="font-size:10px;color:#999">'+p.users+'位成员</div></div><span style="font-size:20px">›</span></div>';}).join('');
+  // Add delete button row
+  el.innerHTML+='<div style="text-align:center;margin-top:8px"><span style="font-size:10px;color:#bbb;cursor:pointer" onclick="showDeleteProfiles()">管理档案 🗑</span></div>';
+}
+function selectProfile(name){
+  document.getElementById('newProfileName').value=name;
+  document.getElementById('profilePin').focus();
+}
+function loginProfileByName(name){
+  _currentProfile=name;
+  ad=loadProfile(name);
+  if(!ad.users)ad={users:[],daily:{}};
+  ad._lastUsed=new Date().toISOString();
+  svD();
+  runMigrations();
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('globalPill').textContent='👤 '+esc(name);
+  sg=ad._lastUserId||null;upPill();renderU();renEaters(true);curTrainUser();loadRecipe();loadTrain();
+}
+function showDeleteProfiles(){
+  var profiles=listProfiles();
+  if(profiles.length===0)return;
+  var list=profiles.map(function(p){return p.name+' ('+p.users+'人)';}).join('\n');
+  var name=prompt('要删除哪个档案？\n\n'+list+'\n\n输入名字确认删除（不可恢复）：');
+  if(name){deleteProfile(name);}
+}
+function deleteProfile(name){
+  if(!confirm('删除档案「'+name+'」？所有数据将丢失！'))return;
+  localStorage.removeItem(getProfileKey(name));
+  renderProfileList();
+  showToast('已删除档案: '+name);
+}
+function loginProfile(){
+  var name=document.getElementById('newProfileName').value.trim();
+  if(!name){showToast('请输入名字');return;}
+  if(name.length<1||name.length>20){showToast('名字1-20个字符');return;}
+  // Check for duplicate
+  if(listProfiles().some(function(p){return p.name===name;})){showToast('该名字已存在，请换一个');return;}
+  _currentProfile=name;
+  ad=loadProfile(name);
+  if(!ad.users)ad={users:[],daily:{}};
+  ad._lastUsed=new Date().toISOString();
+  svD();
+  runMigrations();
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('globalPill').textContent='👤 '+esc(name);
+  sg=ad._lastUserId||null;upPill();renderU();renEaters(true);curTrainUser();loadRecipe();loadTrain();
+}
+function logoutProfile(){
+  if(!confirm('退出当前档案？'))return;
+  svD();
+  _currentProfile='';ad={users:[],daily:{}};
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('newProfileName').value='';
+  document.getElementById('profilePin').value='';
+  renderProfileList();
+  document.getElementById('globalPill').textContent='选择成员';
+  sg=null;renderU();renEaters(true);
+}
+// Override migrate logic to check on profile load
+function runMigrations(){
+  ad.users.forEach(function(u){
+    if(u.trainingMinutes!=null&&u.trainingYears==null){var tm=u.trainingMinutes;if(tm<=30)u.trainingYears=0;else if(tm<=45)u.trainingYears=0.5;else if(tm<=75)u.trainingYears=1;else if(tm<=105)u.trainingYears=2;else u.trainingYears=3;delete u.trainingMinutes;}
+    if(u.activity!=null){delete u.activity;}
+    if(u.trainingYears==null)u.trainingYears=0;if(u.noTrain==null)u.noTrain=false;
+    if(!u._bodyLog)u._bodyLog=[];if(u.weight&&u._bodyLog.length===0){u._bodyLog.push({date:today(),weight:u.weight,arm:0,chest:0,shoulder:0,waist:0,hip:0});}
+    u.expLevel=u.noTrain?'none':(u.trainingYears<0.5?'beginner':u.trainingYears<2?'intermediate':'advanced');
+  });
+  svD();
+}
+
 function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function tom(){var d=new Date();d.setDate(d.getDate()+1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function scaleQty(q,n){if(!q)return q;var m=q.match(/^([d.]+)(.*)$/);if(!m)return q;var v=parseFloat(m[1])*n;return (v%1===0?v:v.toFixed(1))+m[2];}
@@ -287,7 +408,7 @@ function showSw(){
   document.body.appendChild(ov);
 }
 function selGl(id){sg=id;ad._lastUserId=id;svD();upPill();renderU();renEaters(true);curTrainUser();loadTrain();ensureWeekly();document.querySelector('.sw-over')?.remove();}
-document.getElementById('globalPill').addEventListener('click',showSw);
+document.getElementById('globalPill').addEventListener('click',function(e){if(_currentProfile)showSw();});
 
 // ===== TRAINING SELECTION =====
 function selTrain(el){el.classList.toggle('sl');st=Array.from(document.querySelectorAll('#trainGrid .tb.sl')).map(function(b){return b.dataset.p;});}
@@ -608,6 +729,7 @@ function getAdEx(uid,parts,exp){
 }
 // ===== CONFIRM & GENERATE (meal + training) =====
 function confirmGen(){
+  try{
   var el=document.getElementById('genResult'),btn=document.getElementById('genBtn');
   if(ad.users.length===0){showToast('请添加成员');return;}
   if(se.size===0){showToast('请选择谁吃饭');return;}
@@ -621,6 +743,9 @@ function confirmGen(){
   var picker=tu||eaters[0]||ad.users[0];
   var meals=pickMealsForUser(picker,st,rc);
   var bf=meals.bf,lu=meals.lu,di=meals.di;
+  // Calculate body trend for display
+  var trend=getBodyTrend(picker.id,28);
+  var trendAdv=trend?getTrendAdvice(picker,trend):'';
   // Training-aware tip selection
   var tip='';
   if(hasRest){tip='休息日适当降低碳水，多吃蔬菜蛋白质，保持水分摄入。';}
@@ -702,6 +827,10 @@ function confirmGen(){
   // Reset training selection to prevent stale carry-over
   st=[];document.querySelectorAll('#trainGrid .tb.sl').forEach(function(b){b.classList.remove('sl');});
   el.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    btn.disabled=false;btn.innerHTML='✅ 确认 · 今日食谱 & 训练';
+    el.innerHTML='<div class="block" style="text-align:center;color:#e74c3c;padding:16px">⚠️ 出错了: '+e.message+'<br><span style="font-size:11px;color:#999">请刷新页面重试</span></div>';
+  }
 }
 
 // ===== RECIPE PAGE =====
@@ -895,6 +1024,13 @@ function mkCl(root){
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',function(){
+  // Show login screen
+  renderProfileList();
+  var profiles=listProfiles();
+  if(profiles.length===1&&profiles[0].users===0){
+    // Auto-login if only one empty profile
+    selectProfile(profiles[0].name);
+  }
   // Monthly body update reminder
   setTimeout(function(){
     ad.users.forEach(function(u){
